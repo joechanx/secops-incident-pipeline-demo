@@ -1,0 +1,5 @@
+user_id,username,department,role,privileged_user,location
+U001,alice.lin,Finance,Manager,false,TPE
+U002,bob.chen,IT,SysAdmin,true,TPE
+U003,carol.hsu,Sales,SalesRep,false,TXG
+U004,david.wu,Engineering,DevOps,true,TPE

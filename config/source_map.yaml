@@ -1,0 +1,18 @@
+idp_events:
+  kind: jsonl
+  path: idp_events.jsonl
+edr_alerts:
+  kind: jsonl
+  path: edr_alerts.jsonl
+firewall_logs:
+  kind: csv
+  path: firewall_logs.csv
+vuln_findings:
+  kind: csv
+  path: vuln_findings.csv
+users:
+  kind: csv
+  path: users.csv
+assets:
+  kind: csv
+  path: assets.csv

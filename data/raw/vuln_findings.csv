@@ -1,0 +1,4 @@
+finding_id,asset_id,cve_id,severity,exploit_known,status
+V001,A001,CVE-2024-1111,high,true,open
+V002,A002,CVE-2024-2222,critical,true,open
+V003,A004,CVE-2023-9999,medium,false,open

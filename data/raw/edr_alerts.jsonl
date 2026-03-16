@@ -1,0 +1,2 @@
+{"alert_id":"EDR-5001","event_time":"2026-03-15T08:20:00Z","asset_id":"A002","hostname":"ad-admin-01","severity":"high","tactic":"Credential Access","technique":"LSASS Dump","process_name":"procdump.exe"}
+{"alert_id":"EDR-5002","event_time":"2026-03-15T08:21:30Z","asset_id":"A001","hostname":"fin-app-01","severity":"medium","tactic":"Execution","technique":"Suspicious Script","process_name":"python3"}

@@ -1,0 +1,19 @@
+base_scores:
+  low: 20
+  medium: 40
+  high: 60
+  critical: 80
+
+modifiers:
+  privileged_user: 20
+  critical_asset: 25
+  known_exploitable_vuln: 15
+  suspicious_country: 10
+  possible_c2: 15
+  repeated_events: 10
+
+priority_thresholds:
+  P1: 90
+  P2: 70
+  P3: 50
+  P4: 0

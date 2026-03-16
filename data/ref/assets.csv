@@ -1,0 +1,5 @@
+asset_id,hostname,owner_user_id,business_unit,criticality,os,public_facing
+A001,fin-app-01,U001,Finance,high,linux,true
+A002,ad-admin-01,U002,IT,critical,windows,false
+A003,pos-gw-01,U003,Retail,high,linux,true
+A004,ci-runner-01,U004,Engineering,medium,linux,false

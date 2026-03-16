@@ -1,0 +1,7 @@
+raw_data_dir: data/raw
+ref_data_dir: data/ref
+output_dir: data/output
+scoring_rules: config/scoring_rules.yaml
+source_map: config/source_map.yaml
+correlation_window_minutes: 15
+enable_markdown_summary: true
