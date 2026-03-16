@@ -1,49 +1,161 @@
 # secops-incident-pipeline-demo
 
-A Python demo pipeline that ingests **synthetic security events** from multiple sources, normalizes and enriches them, correlates related activity, scores incident risk, and exports a triaged incident queue plus an executive summary.
+![Python](https://img.shields.io/badge/python-3.11+-blue)
+![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
+![License](https://img.shields.io/badge/license-MIT-lightgrey)
+![Status](https://img.shields.io/badge/status-demo%20project-informational)
+![Config Driven](https://img.shields.io/badge/design-config--driven-orange)
 
-This repo is designed as a **portfolio/demo project** for GitHub and freelance profiles. It intentionally uses **fictional company context**, **synthetic data**, and **config-driven rules** so it can be shared publicly.
+A config-driven Python pipeline that ingests synthetic security events from multiple sources, normalizes and enriches the data, correlates related alerts, scores incident risk, and exports a triaged incident queue with summary outputs.
 
-## Business context
+---
 
-**AcmeRetail Taiwan** is a fictional mid-sized retail company with:
+## Highlights
 
+- Multi-source synthetic event ingestion
+- Common-schema normalization
+- User and asset context enrichment
+- Incident correlation and deduplication
+- Rule-based risk scoring via YAML config
+- CSV, Markdown, and JSON outputs
+- CLI-driven local execution
+- Portfolio-ready demo for Python pipelines and system integration
+
+---
+
+## Why this project exists
+
+Security-relevant events often come from separate systems such as:
+
+- identity provider logs
+- endpoint detection alerts
+- firewall traffic logs
+- vulnerability findings
+- user and asset inventories
+
+These sources usually differ in format, severity scales, and context quality.
+
+This project demonstrates how a Python pipeline can turn fragmented raw events into a consistent, prioritized incident queue.
+
+---
+
+## Demo scenario
+
+This repository simulates a realistic SecOps / SOC workflow in a fictional mid-sized enterprise:
+
+**AcmeRetail Taiwan**
 - 350 employees
-- 3 office locations
-- an e-commerce platform
-- mixed IT assets: internal AD, VPN, cloud apps, Linux app servers, POS systems
+- Multiple office locations
+- E-commerce platform
+- Hybrid IT environment across internal systems and cloud services
 
-The company receives security-related events from multiple tools, but the raw alerts are hard to triage because:
+The security team receives fragmented events from different systems, but the data is difficult to triage manually.  
+This demo shows how Python can be used to unify, enrich, correlate, and prioritize those signals into actionable incidents.
 
-- data formats differ by source
-- context is spread across users, assets, and vulnerabilities
-- the same incident can produce multiple alerts
-- manual review does not scale
+---
 
-This pipeline demonstrates a simple but realistic workflow:
+## Architecture
 
-1. Ingest raw events from multiple sources
-2. Normalize them to a common schema
-3. Enrich them with user / asset / vulnerability context
-4. Correlate related activity into incidents
-5. Score risk using config-driven rules
-6. Export an incident queue and markdown summary
+![Architecture Diagram](docs/architecture.png)
 
-## Demo data sources
+```mermaid
+flowchart TD
+    A[Raw Sources] --> A1[idp_events.jsonl]
+    A --> A2[edr_alerts.jsonl]
+    A --> A3[firewall_logs.csv]
+    A --> A4[vuln_findings.csv]
+    A --> A5[users.csv]
+    A --> A6[assets.csv]
 
-Raw event sources:
+    A1 --> B[Ingest]
+    A2 --> B
+    A3 --> B
+    A4 --> B
+    A5 --> B
+    A6 --> B
 
-- `idp_events.jsonl` – identity / login events
-- `edr_alerts.jsonl` – endpoint detection alerts
-- `firewall_logs.csv` – outbound network sessions
-- `vuln_findings.csv` – vulnerability findings
+    B --> C[Normalize]
+    C --> D[Enrich]
+    D --> E[Correlate / Deduplicate]
+    E --> F[Risk Scoring]
+    F --> G[Outputs]
 
-Reference data:
+    G --> G1[incidents.csv]
+    G --> G2[incident_summary.md]
+    G --> G3[metrics.json]
+```
 
-- `users.csv`
-- `assets.csv`
+---
 
-All data is synthetic.
+## Pipeline stages
+
+### 1. Ingest
+Load raw synthetic data from JSONL and CSV sources.
+
+### 2. Normalize
+Map source-specific fields into a common event schema.
+
+### 3. Enrich
+Add contextual information from user, asset, and vulnerability reference data.
+
+### 4. Correlate
+Group related events into incidents and reduce duplication.
+
+### 5. Score
+Apply YAML-driven risk scoring rules to assign priority.
+
+### 6. Export
+Write triaged outputs for analyst review and reporting.
+
+---
+
+## Synthetic data sources
+
+This project uses only synthetic demo data. No real company or personal data is included.
+
+### Raw event sources
+- `data/raw/idp_events.jsonl`
+- `data/raw/edr_alerts.jsonl`
+- `data/raw/firewall_logs.csv`
+- `data/raw/vuln_findings.csv`
+
+### Reference data
+- `data/ref/users.csv`
+- `data/ref/assets.csv`
+
+These datasets simulate:
+- privileged and non-privileged users
+- critical and non-critical assets
+- exploitable vulnerabilities
+- suspicious login behavior
+- endpoint detection activity
+- network traffic anomalies
+
+---
+
+## Risk scoring
+
+Risk scoring is rule-based and configured through YAML.
+
+Example considerations:
+- source severity
+- privileged user
+- critical asset
+- known exploitable vulnerability
+- suspicious geography
+- possible command-and-control traffic
+- repeated correlated activity
+
+Example output fields:
+- `risk_score`
+- `priority`
+- `recommended_action`
+
+Configuration lives in:
+- `config/scoring_rules.yaml`
+- `config/pipeline.yaml`
+
+---
 
 ## Project structure
 
@@ -52,9 +164,8 @@ secops-incident-pipeline-demo/
 ├─ README.md
 ├─ requirements.txt
 ├─ pyproject.toml
-├─ Makefile
 ├─ .env.example
-├─ .gitignore
+├─ Makefile
 ├─ config/
 │  ├─ pipeline.yaml
 │  ├─ scoring_rules.yaml
@@ -72,95 +183,138 @@ secops-incident-pipeline-demo/
 │  │  ├─ correlate.py
 │  │  ├─ score.py
 │  │  └─ export.py
+│  ├─ models/
+│  ├─ rules/
 │  └─ utils/
-│     ├─ config.py
-│     └─ logger.py
-└─ tests/
+├─ tests/
+└─ docs/
+   ├─ architecture.png
+   └─ sample-output.png
 ```
+
+---
 
 ## Quick start
 
-### 1) Create a virtual environment
+### 1. Create a virtual environment
 
-#### macOS / Linux
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 ```
 
-#### Windows PowerShell
-```powershell
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-```
-
-### 2) Install dependencies
+### 2. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3) Configure environment variables
+### 3. Prepare environment variables
 
 ```bash
 cp .env.example .env
 ```
 
-### 4) Run the pipeline
+### 4. Run the pipeline
 
 ```bash
-python -m src.main --config config/pipeline.yaml
+python src/main.py --config config/pipeline.yaml
 ```
 
-### 5) Run tests
+---
+
+## Example outputs
+
+After execution, the pipeline generates:
+
+- `data/output/incidents.csv`
+- `data/output/incident_summary.md`
+- `data/output/metrics.json`
+
+### Sample output preview
+
+![Sample Output](docs/sample-output.png)
+
+### Example incident fields
+
+| incident_id | primary_asset | risk_score | priority | recommended_action |
+|---|---|---:|---|---|
+| INC-0001 | ad-admin-01 | 95 | P1 | Isolate host and review privileged account activity |
+| INC-0002 | fin-app-01 | 72 | P2 | Investigate suspicious process and validate external traffic |
+
+---
+
+## Testing
+
+Run tests with:
 
 ```bash
 pytest
 ```
 
-## What the pipeline outputs
+Suggested test coverage includes:
+- normalization logic
+- enrichment behavior
+- scoring rules
+- pipeline smoke test
 
-The run writes files under `data/output/`:
+---
 
-- `incidents.csv` – triaged incident queue
-- `incident_summary.md` – human-readable markdown summary
-- `metrics.json` – basic run metrics
+## Configuration
 
-## Risk scoring model
+This project is intentionally config-driven to make rule changes easy without large code modifications.
 
-The scoring logic is intentionally simple and easy to explain:
+### Main config
+- `config/pipeline.yaml`
 
-- start from a base score derived from severity
-- add modifiers such as:
-  - privileged user
-  - critical asset
-  - known exploitable vulnerability
-  - suspicious country
-  - possible command-and-control traffic
-  - repeated events
+### Scoring rules
+- `config/scoring_rules.yaml`
 
-Thresholds are configured in `config/scoring_rules.yaml`.
+### Example environment variables
+See `.env.example` for:
+- log level
+- input/output directories
+- correlation window
+- feature toggles
 
-## Example use cases for a portfolio
+---
 
-This project demonstrates:
+## Why this is portfolio-ready
 
-- Python ETL / pipeline design
-- multi-source data normalization
-- context enrichment from reference data
-- simple event correlation
-- rule-based risk scoring
-- config-driven behavior
-- testable project structure
+This repo is designed to showcase:
+
+- Python pipeline design
+- ETL-style processing
+- system integration thinking
+- synthetic enterprise data modeling
+- maintainable backend-oriented structure
+- security-aware triage workflows
+
+It reflects the kind of practical engineering work involved in integrating messy data sources, structuring business logic, and producing actionable outputs.
+
+---
 
 ## Future improvements
 
-Possible extensions for a second version:
+Possible next steps:
 
-- DuckDB storage and ad hoc queries
-- Streamlit dashboard
-- HTML report export
+- Docker support
 - GitHub Actions CI
-- Docker image
-- data quality checks with Pandera
-- API-based ingestion instead of local files
+- DuckDB-based analytical queries
+- HTML report export
+- Streamlit dashboard
+- richer detection rules
+- source adapters for mock APIs
+- stronger data quality validation
+
+---
+
+## Notes
+
+- All data in this repository is synthetic and created for demonstration purposes.
+- This project is intended to showcase engineering approach and pipeline design, not to represent a production-ready SOC platform.
+
+---
+
+## License
+This project is licensed under the [MIT License](./LICENSE).
